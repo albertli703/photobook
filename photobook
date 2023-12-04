@@ -1,0 +1,51 @@
+import os
+from datetime import datetime, timedelta
+from PIL import Image
+from natsort import natsorted
+
+images = natsorted([x for x in os.listdir() if x.endswith('.jpg')])
+print(len(images))
+
+for image in images:
+    # New Line 71x=
+    print("=======================================================================")
+    
+    # Show filename
+    print("Filename    = " + image)
+    
+    # set date time format
+    dtf = '%Y-%m-%d' # dtf = '%Y-%m-%d %H:%M:%S'
+    
+    # set timezone
+    tz = timedelta(hours=8)
+    
+    # Show the date and time when the original image data was generated.
+    ptime = Image.open(image)._getexif()[36867]
+    print(("Photo taken = {0}").format(ptime))
+    
+    # Show resolution
+    # res_width = Image.open(image)._getexif()[41486]
+    # res_height = Image.open(image)._getexif()[41487]
+    # print("Resolution = " + str(res_width) + " x " + str(res_height))
+    
+    # Show filesize
+    fsize = format(os.stat(image).st_size/1024/1024, ".1f")
+    print(("Filesize    = {0} MB").format(fsize))
+    
+    # Show time of last modification
+    mtime = os.stat(image).st_mtime
+    mtime2 = (datetime.utcfromtimestamp(mtime) + tz).strftime(dtf)
+    print(("Modified    = {0}").format(mtime2))
+    
+    # Show time of last metadata change (unix) / creation (windows)
+    ctime = os.stat(image).st_ctime
+    ctime2 = (datetime.utcfromtimestamp(ctime) + tz).strftime(dtf)
+    print(("Metadata    = {0}").format(ctime2))
+    
+    # Show time of last access
+    atime = os.stat(image).st_atime
+    atime2 = (datetime.utcfromtimestamp(atime) + tz).strftime(dtf)
+    print(("Accessed    = {0}").format(atime2))
+    
+    # Show photo inline
+    display(Image.open(image).resize((600, 400)))
